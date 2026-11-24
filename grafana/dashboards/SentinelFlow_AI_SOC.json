@@ -1,0 +1,409 @@
+{
+  "uid": "adktrrf",
+  "title": "SentinelFlow_AI_SOC",
+  "tags": [
+    "sentinelflow",
+    "wazuh",
+    "netalertx",
+    "ai-soc",
+    "fim"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 12,
+  "refresh": "30s",
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 100,
+      "type": "row",
+      "title": "Overview",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "collapsed": false
+    },
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "FIM events",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "fg5ao8lrrde68e"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "rule.groups:syscheck",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "auto"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "sum"
+          ],
+          "fields": ""
+        },
+        "colorMode": "background",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 200
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Online devices",
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "cg5b0m1omr6kgb"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "http://192.168.0.50:20212/devices",
+          "url_options": {
+            "method": "GET"
+          },
+          "parser": "backend",
+          "root_selector": "devices",
+          "columns": [
+            {
+              "selector": "devName",
+              "text": "Online Devices",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "count"
+          ],
+          "fields": "Online Devices"
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Latest Airia risk",
+      "description": "Phase 3 Future Work: Populated by Airia AI autonomous triage pipeline (airia-triage-* index)",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "fg5ao8lrrde68e"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "_index:airia-triage-*",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "raw_data"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "airia_risk_score"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Latest alert name",
+      "description": "Phase 3 Future Work: AI-generated incident summary & MITRE ATT&CK classification from Airia AI",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "fg5ao8lrrde68e"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "_index:airia-triage-*",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "raw_data"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "airia_alert_title"
+        }
+      }
+    },
+    {
+      "id": 101,
+      "type": "row",
+      "title": "Wazuh FIM",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "collapsed": false
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "File integrity events",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "fg5ao8lrrde68e"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "rule.groups:syscheck",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "raw_data",
+              "settings": {
+                "size": "100"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "type": "row",
+      "title": "NetAlertX",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "collapsed": false
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Device inventory",
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "cg5b0m1omr6kgb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "http://192.168.0.50:20212/devices",
+          "url_options": {
+            "method": "GET"
+          },
+          "parser": "backend",
+          "root_selector": "devices",
+          "columns": [
+            {
+              "selector": "devLastIP",
+              "text": "IP",
+              "type": "string"
+            },
+            {
+              "selector": "devMac",
+              "text": "MAC",
+              "type": "string"
+            },
+            {
+              "selector": "devName",
+              "text": "Name",
+              "type": "string"
+            },
+            {
+              "selector": "devStatus",
+              "text": "Status",
+              "type": "string"
+            },
+            {
+              "selector": "devType",
+              "text": "Type",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "piechart",
+      "title": "Device status",
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "cg5b0m1omr6kgb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 16
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "http://192.168.0.50:20212/devices",
+          "url_options": {
+            "method": "GET"
+          },
+          "parser": "backend",
+          "root_selector": "devices.{\"status\": ($string(devStatus) ? $string(devStatus) : \"Unknown\"), \"count\": 1}",
+          "columns": [
+            {
+              "selector": "status",
+              "text": "Status",
+              "type": "string"
+            },
+            {
+              "selector": "count",
+              "text": "Count",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": [
+            "sum"
+          ],
+          "fields": ""
+        },
+        "pieType": "pie",
+        "displayLabels": [
+          "name",
+          "value"
+        ]
+      }
+    }
+  ]
+}

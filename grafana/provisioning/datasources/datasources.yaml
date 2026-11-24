@@ -1,0 +1,28 @@
+apiVersion: 1
+
+datasources:
+  - name: SentinelFlow-Wazuh-Indexer-2
+    type: grafana-opensearch-datasource
+    uid: fg5ao8lrrde68e
+    access: proxy
+    url: https://192.168.0.50:9200
+    basicAuth: true
+    basicAuthUser: admin
+    secureJsonData:
+      basicAuthPassword: CHANGE_ME_WAZUH_PASSWORD
+    jsonData:
+      database: wazuh-alerts-*
+      timeField: "@timestamp"
+      version: 2.13.0
+      flavor: opensearch
+      tlsSkipVerify: true
+      pplEnabled: true
+
+  - name: NetAlertX Infinity
+    type: yesoreyeram-infinity-datasource
+    uid: cg5b0m1omr6kgb
+    access: proxy
+    jsonData:
+      global_queries: []
+      allowedHosts:
+        - http://192.168.0.50:20212

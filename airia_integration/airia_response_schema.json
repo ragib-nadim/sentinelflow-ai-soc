@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SentinelFlow Airia AI Triage Output Schema",
+  "type": "object",
+  "required": [
+    "@timestamp",
+    "source_alert_id",
+    "airia_risk_score",
+    "airia_alert_title",
+    "mitre_techniques"
+  ],
+  "properties": {
+    "@timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_alert_id": {
+      "type": "string"
+    },
+    "agent_name": {
+      "type": "string"
+    },
+    "agent_ip": {
+      "type": "string"
+    },
+    "airia_risk_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "airia_alert_title": {
+      "type": "string"
+    },
+    "severity_label": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "mitre_techniques": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "remediation_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
